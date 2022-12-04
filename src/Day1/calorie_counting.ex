@@ -8,7 +8,6 @@ defmodule CalorieCounting do
       |> Enum.sum() end) |> Enum.sort() |> Enum.reverse()
       |> Enum.slice(0, top_count) |> Enum.sum()
   end
-
 end
 
 IO.puts("Example Puzzle. Expect: 24,000")
