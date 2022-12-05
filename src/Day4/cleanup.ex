@@ -1,11 +1,17 @@
 defmodule Cleanup do
   @moduledoc false
 
-  def find_overlapping(input) do
+  def find_total_overlapping(input) do
     pairs = String.split(input, "\n") |> Enum.map(fn s -> String.trim(s) end)
     overlaps = Enum.map(pairs, fn p -> get_ranges(p) end) |> Enum.filter(fn r -> r != nil end)
     supersets = Enum.filter(overlaps, fn o -> is_superset(o) end)
     length(supersets)
+  end
+
+  def find_overlapping(input) do
+    pairs = String.split(input, "\n") |> Enum.map(fn s -> String.trim(s) end)
+    overlaps = Enum.map(pairs, fn p -> get_ranges(p) end) |> Enum.filter(fn r -> r != nil end)
+    length(overlaps)
   end
 
   defp is_superset(o) do
@@ -37,11 +43,17 @@ end
 
 IO.puts("Example Puzzle. Expect: 2")
 case File.read("input/Day4/example.txt") do
-  {:ok, body} -> IO.puts("Result: #{Cleanup.find_overlapping(body)}")
+  {:ok, body} -> IO.puts("Result: #{Cleanup.find_total_overlapping(body)}")
   {:error, reason} -> IO.puts(reason)
 end
 
-IO.puts("Input 1 Puzzle. Expect: ")
+IO.puts("Input 1 Puzzle. Expect: 444")
+case File.read("input/Day4/input1.txt") do
+  {:ok, body} -> IO.puts("Result: #{Cleanup.find_total_overlapping(body)}")
+  {:error, reason} -> IO.puts(reason)
+end
+
+IO.puts("Input 2 Puzzle. Expect: 801")
 case File.read("input/Day4/input1.txt") do
   {:ok, body} -> IO.puts("Result: #{Cleanup.find_overlapping(body)}")
   {:error, reason} -> IO.puts(reason)
