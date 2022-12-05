@@ -21,7 +21,7 @@ defmodule Rps do
       "C X"=>"C Y", "A Y"=>"A X", "B Z"=>"B Z"
     }
     games = String.split(input, "\n")
-    Enum.map(games, fn g -> play_guide[String.trim(g)] end) |> Enum.join("\n") |> predict_score()
+    Enum.map(games, fn g -> play_guide[String.trim(g)] end) |> Enum.join("\n") |> predict_score
   end
 end
 

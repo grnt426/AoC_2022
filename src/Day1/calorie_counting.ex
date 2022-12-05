@@ -5,8 +5,8 @@ defmodule CalorieCounting do
     elves = String.split(input)
     elves_food = Enum.map(elves, fn f -> String.split(f, ",") end)
     Enum.map(elves_food, fn l -> Enum.map(l, fn f -> String.to_integer(f) end)
-      |> Enum.sum() end) |> Enum.sort() |> Enum.reverse()
-      |> Enum.slice(0, top_count) |> Enum.sum()
+      |> Enum.sum end) |> Enum.sort |> Enum.reverse
+      |> Enum.slice(0, top_count) |> Enum.sum
   end
 end
 
