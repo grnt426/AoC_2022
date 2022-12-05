@@ -24,17 +24,17 @@ defmodule Rucksack do
   def find_badges(input) do
     priority = (?a..?z |> Enum.to_list) ++ (?A..?Z |> Enum.to_list)
     sacks = String.split(input, "\n")
+    sacks = Enum.map(sacks, fn s -> prep(s) end)
     find_badges_in_sacks(sacks, priority)
+  end
+
+  defp prep(sack) do
+    String.trim(sack) |> String.graphemes |> Enum.sort |> Enum.dedup |> MapSet.new
   end
 
   defp find_badges_in_sacks(sacks, priority) when length(sacks) > 0 do
     [first | [second | [third | remaining]]] = sacks
-    first = String.trim(first) |> String.graphemes |> Enum.sort |> Enum.dedup |> MapSet.new
-    second = String.trim(second) |> String.graphemes |> Enum.sort |> Enum.dedup |> MapSet.new
-    third = String.trim(third) |> String.graphemes |> Enum.sort |> Enum.dedup |> MapSet.new
-
-    shared = MapSet.intersection(first, second)
-    shared = MapSet.intersection(shared, third)
+    shared = MapSet.intersection(first, second) |> MapSet.intersection(third)
     badge =  MapSet.to_list(shared) |> Enum.at(0) |> String.to_charlist |> Enum.at(0)
     Enum.find_index(priority, fn x -> x == badge end) + 1 + find_badges_in_sacks(remaining, priority)
   end
