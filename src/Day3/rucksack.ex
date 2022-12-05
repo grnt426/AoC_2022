@@ -61,3 +61,9 @@ case File.read("input/Day3/example2.txt") do
   {:ok, body} -> IO.puts("Result: #{Rucksack.find_badges(body)}")
   {:error, reason} -> IO.puts(reason)
 end
+
+IO.puts("Input 2 Puzzle. Expect: 2650")
+case File.read("input/Day3/input1.txt") do
+  {:ok, body} -> IO.puts("Result: #{Rucksack.find_badges(body)}")
+  {:error, reason} -> IO.puts(reason)
+end
