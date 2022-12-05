@@ -28,3 +28,9 @@ case File.read("input/Day2/example.txt") do
   {:ok, body} -> IO.puts(Rps.predict_score(body))
   {:error, reason} -> IO.puts(reason)
 end
+
+IO.puts("Input 1 Puzzle. Expect: 11,063")
+case File.read("input/Day2/input1.txt") do
+  {:ok, body} -> IO.puts(Rps.predict_score(body))
+  {:error, reason} -> IO.puts(reason)
+end
