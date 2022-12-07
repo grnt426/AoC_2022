@@ -7,8 +7,8 @@ defmodule Crane do
     stacks = Enum.slice(puzzle, 1, stack_height - 1)
     numbered = Enum.at(puzzle, stack_height) |> String.split
     total_stacks = List.last(numbered) |> String.trim |> String.to_integer
-    commands = Enum.slice(puzzle, stack_height + 1, length(puzzle) - stack_height - 1)
-    crate_stacks = build_stacks(stacks, total_stacks)
+    commands = Enum.slice(puzzle, stack_height + 2, length(puzzle) - stack_height - 1)
+    crate_stacks = build_stacks(stacks, total_stacks) |> process_moves(commands)
     Enum.map(crate_stacks, fn s -> hd(s) end) |> Enum.to_list
   end
 
@@ -30,6 +30,32 @@ defmodule Crane do
   defp read_crates_for_column(_, crates, line) when line == length(crates) do
     []
   end
+  
+  defp process_moves(stacks, commands) when length(commands) > 0 do
+    [cur | rest] = commands
+    [amt | [src | [dst]]] = Regex.scan(~r/(\d)/, cur, capture: :first) |> List.flatten |> Enum.map(fn c -> String.to_integer(c) end)
+    src = src - 1
+    dst = dst - 1
+    src_stack = Enum.at(stacks, src)
+    dst_stack = Enum.at(stacks, dst)
+    IO.puts("SRC #{src_stack}")
+    IO.puts("DST #{dst_stack == nil}")
+    
+    moved = Enum.slice(src_stack, 0, amt) |> Enum.reverse
+    src_stack = Enum.drop(src_stack, amt)
+    dst_stack = Enum.concat(moved, dst_stack)
+
+    IO.puts("SRC #{src_stack}")
+    IO.puts("DST #{dst_stack}")
+    
+    stacks = List.replace_at(stacks, src, src_stack)
+    stacks = List.replace_at(stacks, dst, dst_stack)
+    process_moves(stacks, rest)
+  end
+  
+  defp process_moves(stacks, commands) when length(commands) == 0 do
+    stacks
+  end
 end
 
 # I have modified the input file *slightly*. The first line indicates how high the stacks are
@@ -41,8 +67,8 @@ case File.read("input/Day5/example.txt") do
   {:error, reason} -> IO.puts(reason)
 end
 
-#IO.puts("Input 1 Puzzle. Expect: ")
-#case File.read("input/Day5/input1.txt") do
-#  {:ok, body} -> IO.puts("Result: #{Crane.find_top_crates(body)}")
-#  {:error, reason} -> IO.puts(reason)
-#end
+IO.puts("Input 1 Puzzle. Expect: ")
+case File.read("input/Day5/input1.txt") do
+  {:ok, body} -> IO.puts("Result: #{Crane.find_top_crates(body)}")
+  {:error, reason} -> IO.puts(reason)
+end
