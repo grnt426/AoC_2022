@@ -8,37 +8,28 @@ defmodule Crane do
     numbered = Enum.at(puzzle, stack_height) |> String.split
     total_stacks = List.last(numbered) |> String.trim |> String.to_integer
     commands = Enum.slice(puzzle, stack_height + 1, length(puzzle) - stack_height - 1)
-
     crate_stacks = build_stacks(stacks, total_stacks)
+    Enum.map(crate_stacks, fn s -> hd(s) end) |> Enum.to_list
   end
 
   defp build_stacks(stacks, total_stacks) do
     reg = ~r/(\s{3}|\[\w\])(?:$|\s)/
-    stack_lists = Enum.map(0..(total_stacks - 1), fn r -> [] end)
     crates = Enum.map(stacks, fn s -> Regex.scan(reg, s, capture: :first) end)
              |> Enum.map(fn c -> Enum.map(c, fn v -> Enum.at(v, 0) |> String.at(1)  end)  end)
-    IO.puts("Line 1 #{length(Enum.at(crates, 0))}")
-    Enum.each(crates, fn line -> Enum.with_index(line) |> Enum.each(fn({c, i}) -> insert_crate(Enum.at(stack_lists, i), c) end) end)
-    IO.puts("Whats in stack 1")
-    IO.puts(Enum.at(stack_lists, 1))
+    Enum.map(0..(total_stacks - 1), fn i -> read_crates_for_column(i, crates, 0) end) |> Enum.to_list
   end
-
-  defp insert_crate(stack, c) when length(stack) > 0 do
-    IO.puts("Inserting crate #{c} into stack #{stack}")
-    case String.trim(c) do
-      "" -> [stack]
-      _ -> [c | stack]
+  
+  defp read_crates_for_column(i, crates, line) when line < length(crates) do
+    crate = Enum.at(crates, line) |> Enum.at(i)
+    case crate do
+      " " -> read_crates_for_column(i, crates, line + 1)
+      _ -> [crate | read_crates_for_column(i, crates, line + 1)]
     end
   end
-
-  defp insert_crate(stack, c) when length(stack) == 0 do
-    IO.puts("Newly inserting crate #{c}")
-    case String.trim(c) do
-      "" -> [stack]
-      _ -> [c | stack]
-    end
+  
+  defp read_crates_for_column(_, crates, line) when line == length(crates) do
+    []
   end
-
 end
 
 # I have modified the input file *slightly*. The first line indicates how high the stacks are
