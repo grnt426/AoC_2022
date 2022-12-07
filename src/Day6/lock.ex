@@ -4,7 +4,7 @@ defmodule Lock do
   def find_lock(input, look_ahead) do
     check = String.slice(input, 0, look_ahead)
     count = String.to_charlist(check) |> Enum.sort |> Enum.dedup |> List.to_string |> String.length
-    dupes = look_ahead - count
+    dupes = round((look_ahead - count) / 2)
     case count do
       ^look_ahead -> look_ahead
       x when x < look_ahead -> dupes + find_lock(String.slice(input, dupes, String.length(input)), look_ahead)
