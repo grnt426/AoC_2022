@@ -33,7 +33,7 @@ defmodule Crane do
   
   defp process_moves(stacks, commands) when length(commands) > 0 do
     [cur | rest] = commands
-    [amt | [src | [dst]]] = Regex.scan(~r/(\d)/, cur, capture: :first) |> List.flatten |> Enum.map(fn c -> String.to_integer(c) end)
+    [amt | [src | [dst]]] = Regex.scan(~r/(\d+)/, cur, capture: :first) |> List.flatten |> Enum.map(fn c -> String.to_integer(c) end)
     src = src - 1
     dst = dst - 1
     src_stack = Enum.at(stacks, src)
@@ -67,7 +67,7 @@ case File.read("input/Day5/example.txt") do
   {:error, reason} -> IO.puts(reason)
 end
 
-IO.puts("Input 1 Puzzle. Expect: ")
+IO.puts("Input 1 Puzzle. Expect: QNHWJVJZW")
 case File.read("input/Day5/input1.txt") do
   {:ok, body} -> IO.puts("Result: #{Crane.find_top_crates(body)}")
   {:error, reason} -> IO.puts(reason)
