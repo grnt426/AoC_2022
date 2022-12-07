@@ -4,9 +4,10 @@ defmodule Lock do
   def find_lock(input, look_ahead) do
     check = String.slice(input, 0, look_ahead)
     count = String.to_charlist(check) |> Enum.sort |> Enum.dedup |> List.to_string |> String.length
+    dupes = look_ahead - count
     case count do
       ^look_ahead -> look_ahead
-      x when x < look_ahead -> 1 + find_lock(String.slice(input, 1, String.length(input)), look_ahead)
+      x when x < look_ahead -> dupes + find_lock(String.slice(input, dupes, String.length(input)), look_ahead)
     end
   end
 end
@@ -20,7 +21,7 @@ case File.read("input/Day6/input1.txt") do
   {:error, reason} -> IO.puts(reason)
 end
 
-IO.puts("Input 1 Puzzle. Expect: ")
+IO.puts("Input 1 Puzzle. Expect: 2508")
 case File.read("input/Day6/input1.txt") do
   {:ok, body} -> IO.puts("Result: #{Lock.find_lock(String.trim(body), 14)}")
   {:error, reason} -> IO.puts(reason)
