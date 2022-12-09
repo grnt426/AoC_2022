@@ -5,12 +5,28 @@ defmodule Sizer do
     fs = process_cmd_list(input)
     IO.puts("Results of processing")
     IO.inspect(fs)
-    find_dirs_max_size(fs, max_size)
-    5
+    find_dirs_max_size(fs["/"], max_size)
   end
 
-  defp find_dirs_max_size(fs, max) do
-#    Enum.map(fs)
+  defp find_dirs_max_size(fs, max) when fs != nil do
+    local_size = fs |> Enum.filter(fn {f, s} -> s != nil and is_integer(s) end)
+                    |> Enum.map(fn {f, s} ->  s end)
+                    |> Enum.sum()
+    IO.puts("Local size: #{local_size}")
+    subs = fs |> Enum.filter(fn {n, d} -> d != nil and is_map(d) end) |> Enum.map(fn {n, d} -> d end)
+    IO.inspect(subs)
+    subs_size = subs |> Enum.map(fn d -> find_dirs_max_size(d, max) end) |> Enum.sum
+    IO.puts("Subs size: #{subs_size}")
+    total = local_size + subs_size
+    IO.puts("Total: #{total}")
+    cond do
+      total > max -> subs_size
+      total < max -> total + subs_size
+    end
+  end
+  
+  defp find_dirs_max_size(fs, max) when fs == nil do
+    0
   end
   
   defp process_cmd_list(input) do
@@ -90,8 +106,9 @@ case File.read("input/Day7/example.txt") do
   {:error, reason} -> IO.puts(reason)
 end
 
-#IO.puts("Input 1 Puzzle. Expect: ")
-#case File.read("input/Day7/input1.txt") do
-#  {:ok, body} -> IO.puts("Result: #{Sizer.sum_dirs_of_max_size(body, 100_000)}")
-#  {:error, reason} -> IO.puts(reason)
-#end
+# Guess of 2116199 is too HIGH
+IO.puts("Input 1 Puzzle. Expect: ")
+case File.read("input/Day7/input1.txt") do
+  {:ok, body} -> IO.puts("Result: #{Sizer.sum_dirs_of_max_size(body, 100_000)}")
+  {:error, reason} -> IO.puts(reason)
+end
